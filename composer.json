@@ -1,0 +1,24 @@
+{
+    "name":"samsonos/js_fixedheader",
+    "description": "SamsonJS table fixed header module",
+    "keywords": [ "samsonjs", "fixed header", "table"],
+    "authors":[
+        {
+            "name":"Vitaly Iegorov",
+            "email":"egorov@samsonos.com"
+        }
+    ],
+    "license":"Open Software License (OSL) v 3.0",
+    "homepage":"http://samsonphp.com/",
+    "autoload" : {
+        "classmap": ["/src"]
+    },
+    "require":{
+        "samsonos/js_core":"*"
+    },
+    "require-dev": {
+        "satooshi/php-coveralls": "dev-master",
+        "squizlabs/php_codesniffer": "2.0.*@dev",
+        "phpunit/phpunit": "4.2.*"
+    }
+}
