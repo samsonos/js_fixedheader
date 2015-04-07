@@ -2,12 +2,20 @@
  * SamsonJS FixedHeader plugin 
  */
 var SamsonJSFixedHeader = 
-{	
-	fixedHeader : function()
-	{			
+{
+    /**
+     * Function to make
+     *
+     * @param headerSelector Fixed element selector
+     * @param bodySelector None fixed part of DOM tree, it'll be removed
+     * @param headerElementsBorder Header inner elements border width.
+     * By default it's supposed that all inner elements are 'display: table-cell' so the parameter value is 1
+     */
+	fixedHeader : function(headerSelector, bodySelector)
+	{
 		// Указатель на самого себя
 		var _self = this;
-		
+
 		/* Initialize plugin */
 		var init = function()
 		{	
@@ -16,31 +24,47 @@ var SamsonJSFixedHeader =
 			
 			// Parent
 			var parent = _self.parent();
-			
-			// THEAD columns 	
-			var THs = s('thead th',_self);
+
+            // Header element
+            var headerElement = s(headerSelector, _self);
 			
 			// Если есть элементы DOM в выборке
 			if ( _self.length && _self.height() > parent.height() && _self.width() <= parent.width())
-			{				
+			{
 				// Clone whole table
 				var _clone = _self.clone();	
 				
 				// Mark clone with special class
 				_clone.addClass('__fixedHeaderClone');
 				
-				// Get cloned table headers
-				var cTHs = s('th',_clone); 
-				
-				// Remove TBODY part
-				s('tbody tr', _clone).remove();
+                //// Get cloned table header
+                var cloneHeaderElement = s(headerSelector, _clone);
+
+                // Remove none-static body
+                s(bodySelector, _clone).remove();
 				
 				// Set table auto width
 				_clone.css('width','auto');	
 				_clone.css('top',_self.offset().top+'px');
-				
-				// Set real columns width
-				for(var i=0; i<THs.length; i++) cTHs.elements[i].css( 'width',THs.elements[i].width()+1+'px');
+
+                // Get all child elements
+                var children = s('*', headerElement);
+                var cloneChildren = s('*', cloneHeaderElement);
+
+                for (var i = 0; i < children.length; i++) {
+
+                    // TODO: Following logic can be improved
+                    // If inner elements have border
+                    var border = parseInt(children.elements[i].css('borderLeftWidth')) +
+                        parseInt(children.elements[i].css('borderRightWidth'));
+                    // If inner elements are table elements
+                    if (children.elements[i].css('display') === 'table-cell') {
+                        border = Math.max(parseInt(children.elements[i].css('borderLeftWidth')),
+                            parseInt(children.elements[i].css('borderRightWidth')));
+                    }
+                    // Set fixed element width
+                    cloneChildren.elements[i].css('width', children.elements[i].width() + border + 'px');
+                }
 						
 				// Append clone to document
 				parent.append(_clone);			
@@ -57,7 +81,7 @@ var SamsonJSFixedHeader =
 					}		
 				});
 			}	
-		}
+		};
 		
 		// Init plugin
 		init();
