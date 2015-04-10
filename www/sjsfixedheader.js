@@ -44,12 +44,13 @@ var SamsonJSFixedHeader =
                 s(bodySelector, _clone).remove();
 				
 				// Set table auto width
-				_clone.css('width','auto');	
 				_clone.css('top',_self.offset().top+'px');
 
                 // Get all child elements
                 var children = s('*', headerElement);
                 var cloneChildren = s('*', cloneHeaderElement);
+
+                var totalWidth = 0;
 
                 for (var i = 0; i < children.length; i++) {
 
@@ -62,11 +63,17 @@ var SamsonJSFixedHeader =
                         border = Math.max(parseInt(children.elements[i].css('borderLeftWidth')),
                             parseInt(children.elements[i].css('borderRightWidth')));
                     }
+
+                    var childWidth = children.elements[i].width() + border;
+                    totalWidth += childWidth;
+
                     // Set fixed element width
-                    cloneChildren.elements[i].css('width', children.elements[i].width() + border + 'px');
+                    cloneChildren.elements[i].css('width', childWidth + 'px');
                 }
-						
-				// Append clone to document
+
+                _clone.css('width',totalWidth+'px');
+
+                // Append clone to document
 				parent.append(_clone);			
 				
 				// Добавим класс для правильного отображения
